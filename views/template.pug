@@ -1,0 +1,33 @@
+doctype html
+html(lang="en-US")
+    head
+        title=title
+        link(rel='stylesheet', href="/stylesheets/style.css")
+        meta(name='viewport' content='width=device-width, initial-scale=1.0')
+        link(rel='preconnect' href='https://fonts.googleapis.com')
+        link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin='')
+        link(href='https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Lavishly+Yours&display=swap' rel='stylesheet')
+        script(src="/js/front_navbar.js")
+        block header
+    body
+        div.navbar.unselectable
+            ul
+                li.logo#logo
+                    div.logo_icon_container
+                        img(src="/images/butterfly.svg" alt="logo").logo_icon
+                    div.logo_title
+                        h1 Butterfly Tasks
+                //li.search
+                //    div.search_container
+                //        div.left
+                //            input(type="text" placeholder="Search")
+                //        div.right
+                //            button#search_button
+                //                img(src="/images/search.svg").search_icon
+                li.account
+                    div.account_container
+                        div
+                            a(href="/account")
+                                img(src="/images/account.svg" alt="account").account_icon
+        div.content#content
+            block content

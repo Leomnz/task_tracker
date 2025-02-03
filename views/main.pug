@@ -1,0 +1,44 @@
+extends template
+block header
+    script(src="/js/front_grid.js")
+    script(src="/js/front_main.js")
+block content
+    div.filters#filters
+        div.filter.unselectable#all
+            p="All"
+        div.filter.unselectable#in_progress
+            p="In Progress"
+        div.filter.unselectable#done
+            p="Done"
+        div.filter.unselectable#starred
+            p="Starred"
+        div.filter.unselectable#deleted
+            p="Deleted"
+    div.grid
+        if data
+            each item in data
+                div.task(data-id=item.NOTE_ID, data-done=item.DONE, data-star=item.STARRED, data-deleted=item.DELETED)
+                    div.inner_task
+                        div.task_title
+                            h2=item.TITLE
+                        div.task_content
+                            p=item.CONTENT
+                        div.task_footer
+                            div.check.unselectable
+                                img(src="/images/check.svg" alt="check")
+                                img(src="/images/cross.svg" alt="cross").hidden
+                            div.edit.unselectable
+                                img(src="/images/edit.svg" alt="edit")
+                            div.star.unselectable
+                                img(src="/images/star.svg" alt="star")
+                                img(src="/images/star_filled.svg" alt="unstar").hidden
+                            div.delete.unselectable
+                                img(src="/images/delete.svg" alt="delete")
+                            div.restore.unselectable.hidden
+                                p="Restore"
+                            div.true_delete.unselectable.hidden
+                                p="Actually Delete"
+                        //div.date
+                        //    p=item.DEADLINE
+    div.add_button#add_button
+        p="New Task"

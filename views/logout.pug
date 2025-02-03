@@ -1,0 +1,10 @@
+extends template
+block header
+    script(src="/js/front_logout.js")
+block content
+    div.account_page
+        div.login#login
+            h1="You are logged in!"
+            div.logout_buttons
+                button#logout_button="Sign Out"
+                button#back_button="Go Back"

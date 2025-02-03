@@ -1,0 +1,38 @@
+extends template
+block header
+    script(src="../js/front_task.js")
+    script(src="../js/front_comment.js")
+block content
+    div.expanded_task#expanded_task_id(data-id=data.NOTE_ID)
+        div.expanded_task_title
+            h1#expanded_task_title(contenteditable="plaintext-only")=data.TITLE
+        div.expanded_task_content
+            p#expanded_task_content(contenteditable="plaintext-only")=data.CONTENT
+        div.expanded_buttons
+            div.expanded_submit
+                button#expanded_submit="Submit"
+            div.expanded_back
+                button#expanded_back="Back"
+            p="Click anywhere to edit"
+    div.comments#comments
+        h2="Comments"
+
+        div.comment.real_comment.hidden#template
+            div.comment_content
+                p.comment_text="content goes here"
+            div.comment_buttons.comment_remove
+                img(src="/images/cross.svg" alt="cross")
+
+        div.inner_comment_container#inner_comment_container
+            each comment in comments
+                div.comment.real_comment(data-id=comment.COMMENT_ID)
+                    div.comment_content
+                        p=comment.COMMENT_CONTENT
+                    div.comment_buttons.comment_remove
+                        img(src="/images/cross.svg" alt="cross")
+        h2="Create a new comment!"
+        div.comment#create_comment_container
+            div.comment_content
+                input(type='text' placeholder="content goes here").comment_text#comment_add_content
+            div.comment_buttons#comment_add
+                img(src="/images/check.svg" alt="check")

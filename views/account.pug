@@ -1,0 +1,25 @@
+extends template
+block header
+    script(src="/js/front_account.js")
+block content
+    div.account_page
+        div.login#login
+            h1 Account Login
+            form#login_form
+                label(for='login_username') Username
+                input(id="login_username" type='text', name='login_username', placeholder='Username').top_input
+                label(for='login_password') Password
+                input(id="login_password" type='password', name='login_password', placeholder='Password')
+                div.buttons
+                    input(type='submit', value='Sign In').submit
+                    a#create_switch Create Account Instead
+        div.signup.hidden#signup
+            h1 Account Creation
+            form#signup_form
+                label(for='signup_username') Username
+                input(id="signup_username" type='text', name='signup_username', placeholder='Username').top_input
+                label(for='signup_password') Password
+                input(id="signup_password" type='password', name='signup_password', placeholder='Password')
+                div.buttons
+                    input(type='submit', value='Sign Up').submit
+                    a#login_switch Log In Instead

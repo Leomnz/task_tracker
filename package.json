@@ -1,0 +1,17 @@
+{
+  "name": "leomnz-task-tracker",
+  "version": "1.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "~1.4.7",
+    "express": "5.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "mysql-await": "~2.2.3",
+    "mysql-memory-server": "^1.8.2",
+    "pug": "~3.0.3"
+  }
+}
