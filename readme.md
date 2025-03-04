@@ -11,6 +11,9 @@
 - Comment system for collaborative task management
 - In-memory database option for development and testing environments
 
+# Screenshots
+![Screenshot 2025-03-03 at 21-48-36 Butterfly Tasks](https://github.com/user-attachments/assets/fd7d58ca-7d0e-42cd-8ccc-ec03bca69f3b)
+
 # Instructions
 ```
 npm i
