@@ -1,5 +1,4 @@
-#
-Task Tracker
+# Task Tracker
 
 ## Overview
 - Frontend: Implemented with Pug templates for dynamic HTML rendering with clean, maintainable views
