@@ -6,7 +6,7 @@
 ## Overview
 - Frontend: Implemented with Pug templates for dynamic HTML rendering with clean, maintainable views
 - Backend: Express.js REST API handling authentication, task operations and data persistence
-- Database: MySQL database with custom promise-based query wrapper for clean async/await patterns
+- Database: MySQL database
 - Authentication: JWT-based session management with bcrypt password hashing for secure user access
 
 ## Features
