@@ -23,10 +23,10 @@ npm run start
 ```
 
 ## Important URLs
-- Main Page http://localhost:4131/
-- Create Page http://localhost:4131/create Accessible with the create button in the bottom right of the main page
-- Account Page http://localhost:4131/account Accessible with the account button on the top right of the navbar
-- Edit / Expanded Page http://localhost:4131/task/id Accessible with the edit button on any task
+- Main Page http://localhost:8080/
+- Create Page http://localhost:8080/create Accessible with the create button in the bottom right of the main page
+- Account Page http://localhost:8080/account Accessible with the account button on the top right of the navbar
+- Edit / Expanded Page http://localhost:8080/task/id Accessible with the edit button on any task
 
 ## Resolutions
 Should work on anything bigger than 550x550
