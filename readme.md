@@ -14,7 +14,6 @@
 - CRUD operations for tasks with status tracking (done, starred, deleted)
 - Multi-user support with data isolation through account-based filtering
 - Comment system
-- In-memory database option for development and testing environments
 
 
 ## Instructions
