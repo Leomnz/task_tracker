@@ -1,5 +1,15 @@
-# Todo
-local mysql server in memory does not work
+# Overview
+Frontend: Implemented with Pug templates for dynamic HTML rendering with clean, maintainable views
+Backend: Express.js REST API handling authentication, task operations and data persistence
+Database: MySQL database with custom promise-based query wrapper for clean async/await patterns
+Authentication: JWT-based session management with bcrypt password hashing for secure user access
+
+# Features
+User authentication system with secure signup/login flows
+CRUD operations for tasks with status tracking (done, starred, deleted)
+Multi-user support with data isolation through account-based filtering
+Comment system for collaborative task management
+In-memory database option for development and testing environments
 
 # Instructions
 ```
@@ -23,5 +33,3 @@ You can use the accounts below for testing, or make your own (username, password
 - user, example
 
 I did most of my testing on admin, admin
-
-I use the words task and note interchangeably in some places in the code
