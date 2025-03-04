@@ -1,7 +1,7 @@
 var app = require("./app");
 const {setup} = require("./data");
 
-const port = 4131;
+const port = 8080;
 app.set("port", port);
 
 async function startApp() {
