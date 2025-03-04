@@ -15,6 +15,10 @@ function extendPool(pool) { // pretend that mysql2/promise works like mysql-awai
 
 let db, connPool;
 
+/**
+ * Setup the database
+ * @returns {Promise<void>}
+ */
 async function setup(){
     db = await createDB();
     connPool = await mysql.createPool({
