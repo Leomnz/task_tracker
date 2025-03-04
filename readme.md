@@ -1,3 +1,7 @@
+##
+Task Tracker
+
+
 # Overview
 - Frontend: Implemented with Pug templates for dynamic HTML rendering with clean, maintainable views
 - Backend: Express.js REST API handling authentication, task operations and data persistence
