@@ -1,5 +1,8 @@
 # Task Tracker
 
+## Screenshots
+![Screenshot 2025-03-03 at 21-48-36 Butterfly Tasks](https://github.com/user-attachments/assets/fd7d58ca-7d0e-42cd-8ccc-ec03bca69f3b)
+
 ## Overview
 - Frontend: Implemented with Pug templates for dynamic HTML rendering with clean, maintainable views
 - Backend: Express.js REST API handling authentication, task operations and data persistence
@@ -13,8 +16,6 @@
 - Comment system
 - In-memory database option for development and testing environments
 
-## Screenshots
-![Screenshot 2025-03-03 at 21-48-36 Butterfly Tasks](https://github.com/user-attachments/assets/fd7d58ca-7d0e-42cd-8ccc-ec03bca69f3b)
 
 ## Instructions
 ```
