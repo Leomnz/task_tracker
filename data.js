@@ -1,23 +1,52 @@
-const mysql = require(`mysql-await`); // npm install mysql-await
+const mysql =  require('mysql2/promise')
 var bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const {createDB} = require("mysql-memory-server");
+const fs = require('fs');
+const path = require('path');
+
+function extendPool(pool) { // pretend that mysql2/promise works like mysql-await
+    pool.awaitQuery = async function(query, params) {
+        const [rows] = await pool.query(query, params);
+        return rows;
+    };
+    return pool;
+}
 
 let db, connPool;
 
 async function setup(){
-    db = await createDB({
-        // see Options below for the options you can use in this object and their default values
-        // for example:
-        version: '8.4.x'
-    })
+    db = await createDB();
     connPool = await mysql.createPool({
+        connectionLimit: 10,
         host: '127.0.0.1',
         user: db.username,
         port: db.port,
         database: db.dbName,
-        password: ''
-    })
+        password: db.password
+    });
+
+    connPool = extendPool(connPool);
+
+    try {
+        // Read schema file
+        const schemaPath = path.join(__dirname, 'schema.sql');
+        const schemaSQL = fs.readFileSync(schemaPath, 'utf8');
+
+        // Split the schema into individual statements
+        const statements = schemaSQL.split(';').filter(stmt => stmt.trim());
+
+        // Execute each statement
+        for (const statement of statements) {
+            if (statement.trim()) {
+                await connPool.query(statement);
+            }
+        }
+        console.log("Database schema created successfully");
+    } catch (error) {
+        console.error("Error setting up database schema:", error);
+        throw error;
+    }
 }
 
 
@@ -53,13 +82,7 @@ async function signup(username, password) {
     const hash = await bcrypt.hash(password, salt); // generate hash
     // console.log("Username: " + username + " Password: " + password + " Hash: " + hash);
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
-        let result = await connection.awaitQuery("INSERT INTO ACCOUNT (USERNAME, PASSWORD_HASH) VALUES (?, ?)", [username, hash]);
-
-        connection.release();
+        let result = await connPool.awaitQuery("INSERT INTO ACCOUNT (USERNAME, PASSWORD_HASH) VALUES (?, ?)", [username, hash]);
 
         if (result.affectedRows === 0) {
             console.log("Failed to insert");
@@ -140,13 +163,8 @@ async function getTasks(ID, done = false, starred = false, deleted = false) {
  */
 async function getTask(account_id, task_id) {
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
-        let result = await connection.awaitQuery("SELECT * FROM NOTE WHERE ACCOUNT_ID = ? AND NOTE_ID = ?", [account_id, task_id]);
+        let result = await connPool.awaitQuery("SELECT * FROM NOTE WHERE ACCOUNT_ID = ? AND NOTE_ID = ?", [account_id, task_id]);
 
-        connection.release();
         if (result.length === 0) {
             return false
         }
@@ -180,14 +198,7 @@ async function updateBool(account_id, task_id, type, value) {
 
     let parameters = [value, account_id, task_id];
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
-        let result = await connection.awaitQuery(query, parameters);
-
-        connection.release();
+        let result = await connPool.awaitQuery(query, parameters);
         if (result.affectedRows === 0) {
             return false
         }
@@ -207,19 +218,14 @@ async function updateBool(account_id, task_id, type, value) {
  */
 async function createTask(title, content, account_id) {
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
         let date = new Date().toISOString().slice(0, 19).replace('T', ' ').split(' ');
 
 
         let query = `INSERT INTO NOTE (TITLE, CONTENT, CREATION_TIME, DONE, STARRED, DELETED, ACCOUNT_ID)
                      VALUES (?, ?, Timestamp("${date[0]}", "${date[1]}"), ?, ?, ?, ?)`;
         let parameters = [title, content, false, false, false, account_id];
-        let result = await connection.awaitQuery(query, parameters);
+        let result = await connPool.awaitQuery(query, parameters);
 
-        connection.release();
         if (result.affectedRows === 0) {
             return false;
         }
@@ -238,14 +244,9 @@ async function createTask(title, content, account_id) {
  */
 async function deleteTask(task_id, account_id) {
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
-        await connection.awaitQuery("DELETE FROM COMMENT WHERE ACCOUNT_ID = ? AND NOTE_ID = ?", [account_id, task_id]);
-        let result = await connection.awaitQuery("DELETE FROM NOTE WHERE ACCOUNT_ID = ? AND NOTE_ID = ?", [account_id, task_id]);
+        await connPool.awaitQuery("DELETE FROM COMMENT WHERE ACCOUNT_ID = ? AND NOTE_ID = ?", [account_id, task_id]);
+        let result = await connPool.awaitQuery("DELETE FROM NOTE WHERE ACCOUNT_ID = ? AND NOTE_ID = ?", [account_id, task_id]);
 
-        connection.release();
         if (result.affectedRows === 0) {
             return false;
         }
@@ -266,15 +267,9 @@ async function deleteTask(task_id, account_id) {
  */
 async function editTask(task_id, account_id, title, Content) {
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
         let query = "UPDATE NOTE SET TITLE = ?, CONTENT = ? WHERE ACCOUNT_ID = ? AND NOTE_ID = ?";
         let parameters = [title, Content, account_id, task_id];
-        let result = await connection.awaitQuery(query, parameters);
-
-        connection.release();
+        let result = await connPool.awaitQuery(query, parameters);
         if (result.affectedRows === 0) {
             return false;
         }
@@ -293,15 +288,10 @@ async function editTask(task_id, account_id, title, Content) {
  */
 async function getComments(task_id, account_id) {
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
         let query = "SELECT * FROM COMMENT WHERE ACCOUNT_ID = ? AND NOTE_ID = ?";
         let parameters = [account_id, task_id];
-        let result = await connection.awaitQuery(query, parameters);
+        let result = await connPool.awaitQuery(query, parameters);
 
-        connection.release();
         if (result.length === 0) {
             return false;
         }
@@ -321,15 +311,10 @@ async function getComments(task_id, account_id) {
  */
 async function createComment(task_id, account_id, content) {
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
         let query = "INSERT INTO COMMENT (COMMENT_CONTENT, NOTE_ID, ACCOUNT_ID) VALUES (?, ?, ?) ";
         let parameters = [content, task_id, account_id];
-        let result = await connection.awaitQuery(query, parameters);
+        let result = await connPool.awaitQuery(query, parameters);
 
-        connection.release();
         if (result.affectedRows === 0) {
             return false;
         }
@@ -349,15 +334,9 @@ async function createComment(task_id, account_id, content) {
  */
 async function deleteComment(comment_id, task_id, account_id) {
     try {
-        const connection = await connPool.awaitGetConnection(); // have to do it this way because the try catch does not work otherwise
-        connection.on("error", (err) => {
-            console.error(`Connection error ${err.code}`);
-        });
         let query = "DELETE FROM COMMENT WHERE COMMENT_ID = ? AND ACCOUNT_ID = ? AND NOTE_ID = ? ";
         let parameters = [comment_id, account_id, task_id];
-        let result = await connection.awaitQuery(query, parameters);
-
-        connection.release();
+        let result = await connPool.awaitQuery(query, parameters);
         if (result.affectedRows === 0) {
             return false;
         }

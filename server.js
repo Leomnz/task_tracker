@@ -1,8 +1,20 @@
 var app = require("./app");
+const {setup} = require("./data");
 
 const port = 4131;
 app.set("port", port);
 
-app.listen(port, () => {
-    console.log(`Started! http://localhost:${port}`);
+async function startApp() {
+    console.log("Starting database setup...");
+    await setup();
+
+    app.listen(port, () => {
+        console.log(`Started! http://localhost:${port}`);
+    });
+}
+
+
+startApp().catch(err => {
+    console.error('Failed to start application:', err);
+    process.exit(1);
 });

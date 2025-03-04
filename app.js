@@ -1,8 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
-const {setup} = require("./data");
-setup();
 
 
 // logging
@@ -54,7 +52,6 @@ var editRouter = require('./routes/api/api_edit');
 app.use('/', editRouter);
 
 var commentRouter = require('./routes/api/api_comments');
-const {set} = require("express/lib/application");
 app.use('/', commentRouter);
 
 app.use((req, res, next) => {
